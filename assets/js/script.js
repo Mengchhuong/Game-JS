@@ -16,7 +16,6 @@ function background() {
     // draws the black board
     context.fillRect(0, 0, canvas.width, canvas.height);
   }
-  
   background();
 
 //draw ball
@@ -42,8 +41,8 @@ function drawRec(x,y,width,height,speed){
     }
 }
 
-var paddleUser=drawRec(0,0,10,80,7); 
-var paddleEnemy = drawRec(690,0,10,80,7);
+var paddleUser=drawRec(0,0,10,80,10); 
+var paddleEnemy = drawRec(690,0,10,80,10);
 
 function controllKeyPress(paddle){
     if(paddle.y>0){
@@ -59,8 +58,6 @@ function erase(){
     context.fillRect(0,0,canvas.width,canvas.height);
 }
 
-
-
 document.addEventListener("keydown",function(event){
     moveDown=false;moveUp=false;
     if(event.key=="ArrowUp") moveUp=true;
@@ -70,32 +67,33 @@ document.addEventListener("keydown",function(event){
 })
 startGame();
 
-
 function randomEnemy(paddle){
-    // var randomUp = canvas.height - paddle.h; 
+    var randomUp = canvas.height - paddle.h; 
     setInterval(function(){ 
         // paddle.y=Math.random() * 320;
         // console.log(paddle.y);
         if(paddle.y>=randomUp){
             paddle.y = randomUp;
-            paddle.y-=5;
+            paddle.y-=10;
         }
         else if(paddle.y>=0 && paddle.y<320){
-            paddle.y+=5;
+            paddle.y+=10;
             if(paddle.y==320){
-            
                 paddle.y=0;
             }
         }
-    },10);
+    },50);
 }
+
 
 randomEnemy(paddleEnemy);
 
-function draw() {
+function draw(paddle) {
     // context.clearRect(0, 0, canvas.width, canvas.height);
-    // erase();
+    erase();
     drawBall();
+    paddleEnemy.draw();
+    paddleUser.draw();
     
     if(x + dx > canvas.width-10 || x + dx < 10) {
         dx = -dx;
@@ -105,18 +103,32 @@ function draw() {
     }
     x += dx;
     y += dy;
+
+    var randomUp = canvas.height - paddle.h; 
+        if(paddle.y>=randomUp){
+            paddle.y = randomUp;
+            paddle.y-=10;
+        }
+        else if(paddle.y>=0 && paddle.y<320){
+            paddle.y+=10;
+            if(paddle.y==320){
+                paddle.y=0;
+            }
+        }
+  
 }
 
-setInterval(draw, 10);
+setInterval(draw, 20);
 
 function startGame(){
-    erase();
+
+    // erase();
     // context.clearRect(0,0,paddleUser.w,);
-    paddleUser.draw()
-    controllKeyPress(paddleUser)
-    paddleUser.draw();
-    drawBall();
-    paddleEnemy.draw();
+    
+    controllKeyPress(paddleUser);
+    // paddleUser.draw();
+    // drawBall();
+    // paddleEnemy.draw();
     // draw();
     
 }
