@@ -11,7 +11,23 @@ let gameSpeed;
 let paddlePlayer
 let ball;
 let paddleEnemy;
+let place="../../assets/storages/audios/";
+let audios=[place+'mashmelloalone.mp3',place+''];
+let currentMusic=0;
+let audio = new Audio();
+let buttonMusic=document.getElementById("music");
+function playAudio(){    
+    audio.src=audios[currentMusic]
+    audio.play();
+    currentMusic+=1;
+    if(currentMusic==audios.length){
+        currentMusic=0;
+        audio.loop=true;
+        audio.autoplay=true; 
+    }
 
+}
+window.onload=playAudio;
 document.addEventListener('keydown',function(event){
     keysPress[event.code] = true;
 
@@ -130,6 +146,12 @@ function drawEnemy(x,y,width,height,color){
             context.closePath();
         }
     }
+}
+function playaudio(){
+   audio.src=audios[0];
+    audio.play();   
+    audio.autoplay;
+    audio.loop=true;
 }
 function updateGame(){
     requestAnimationFrame(updateGame);
