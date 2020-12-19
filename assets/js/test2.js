@@ -43,6 +43,19 @@ function drawBall(x,y,radius,color){
         c:color,
         dy:-gameSpeed,
         dx:gameSpeed,
+        update:function(){
+            this.draw();
+    
+            if(this.x + this.dx > canvas.width-this.r || this.x + this.dx < this.r) {
+                this.dx = -this.dx;
+            }
+            if(this.y + this.dy > canvas.height-this.r || this.y + this.dy < this.r) {
+                this.dy = -this.dy;
+            }
+            
+            this.x += this.dx;
+            this.y += this.dy;
+        },
         updateRightUp:function(){
             this.draw();
             this.x+=this.dx;
@@ -57,11 +70,16 @@ function drawBall(x,y,radius,color){
             this.draw();
             this.x-=this.dx;
             this.y+=this.dy;
+            
         },
         updateLeftDown:function(){
             this.draw();
             this.x-=this.dx;
             this.y-=this.dy;
+           
+        },
+        isCollision:function(){
+
         },
         draw:function(){
             context.beginPath();
@@ -156,15 +174,23 @@ function playaudio(){
 function updateGame(){
     requestAnimationFrame(updateGame);
     context.clearRect(0, 0, canvas.width, canvas.height);
-    // ball.updateRightUp();
     context.beginPath();
     context.fillStyle='black';
     context.fillRect(0,0,canvas.width,canvas.height);
     context.closePath();
+    // ball.updateLeftUp();
+    // ball.updateLeftDown()
+    ball.update();
     paddlePlayer.update();
     paddleEnemy.update();
-
 }
+
+function drawText(){
+    return{
+        
+    }
+}
+
 function startGame(){
     canvas.width=900;
     canvas.height =500;
@@ -173,6 +199,5 @@ function startGame(){
     paddlePlayer = drawPlayer(0,0,15,100,"#F70D1A");
     paddleEnemy = drawEnemy(canvas.width-15,0,15,100,"#CC6600");
     requestAnimationFrame(updateGame);
-
 }
 startGame();
