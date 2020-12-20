@@ -10,6 +10,7 @@ let scorePlayer;
 let gameSpeed;
 let paddlePlayer
 let ball;
+let bar;
 let paddleEnemy;
 let place="../../assets/storages/audios/";
 let audios=[place+'mashmelloalone.mp3',place+''];
@@ -35,6 +36,12 @@ document.addEventListener('keydown',function(event){
 document.addEventListener('keyup',function(event){
     keysPress[event.code]=false;
 });
+function drawBackground(color){
+    context.beginPath();
+    context.fillStyle=color;
+    context.fillRect(0,0,canvas.width,canvas.height);
+    context.closePath();
+}
 function drawBall(x,y,radius,color){
     return {
         x:x,
@@ -47,10 +54,12 @@ function drawBall(x,y,radius,color){
             this.draw();
     
             if(this.x + this.dx > canvas.width-this.r || this.x + this.dx < this.r) {
+                drawBackground("#F2BB66");
                 this.dx = -this.dx;
                 this.x = canvas.width/2
             }
             if(this.y + this.dy > canvas.height-this.r || this.y + this.dy < this.r) {
+                drawBackground("#F778A1");
                 this.dy = -this.dy;
             }
             
@@ -186,16 +195,20 @@ function playaudio(){
 function updateGame(){
     requestAnimationFrame(updateGame);
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.beginPath();
-    context.fillStyle='black';
-    context.fillRect(0,0,canvas.width,canvas.height);
-    context.closePath();
+    // context.beginPath();
+    // context.fillStyle='black';
+    // context.fillRect(0,0,canvas.width,canvas.height);
+    // context.closePath();
+    drawBackground("black");
+    bar.draw();
     ball.update();
     if(isCollisionPaddlePlayer()){
+        drawBackground("#F70D1A");
         ball.x=30;
         ball.dx=-ball.dx;
     }
     if(isCollisionPaddleEnemy()){
+        drawBackground("#806517");
         ball.x = canvas.width-30;
         ball.dx=-ball.dx
     }
@@ -211,6 +224,7 @@ function startGame(){
     gameSpeed=3;
     ball =drawBall(canvas.width/2,canvas.height/2,10,"#FFFFC2");
     paddlePlayer = drawPlayer(0,0,15,100,"#F70D1A");
+    bar = drawPlayer(canvas.width/2,0,10,canvas.height,"white");
     paddleEnemy = drawEnemy(canvas.width-15,0,15,100,"#CC6600");
     requestAnimationFrame(updateGame);
 }
