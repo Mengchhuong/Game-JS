@@ -71,7 +71,6 @@ function draw() {
             paddleX = 0;
         }
     }
-    
     x += dx;
     y += dy;
 }
