@@ -48,6 +48,7 @@ function drawBall(x,y,radius,color){
     
             if(this.x + this.dx > canvas.width-this.r || this.x + this.dx < this.r) {
                 this.dx = -this.dx;
+                this.x = canvas.width/2
             }
             if(this.y + this.dy > canvas.height-this.r || this.y + this.dy < this.r) {
                 this.dy = -this.dy;
@@ -55,6 +56,7 @@ function drawBall(x,y,radius,color){
             
             this.x += this.dx;
             this.y += this.dy;
+
         },
         updateRightUp:function(){
             this.draw();
@@ -78,9 +80,6 @@ function drawBall(x,y,radius,color){
             this.y-=this.dy;
            
         },
-        isCollision:function(){
-
-        },
         draw:function(){
             context.beginPath();
             context.arc(this.x, this.y, this.r,0,Math.PI*2);
@@ -90,6 +89,19 @@ function drawBall(x,y,radius,color){
         }
     }
 }
+
+function isCollisionPaddlePlayer(){
+    return (ball.x+ball.r>paddlePlayer.x&&
+    paddlePlayer.x+paddlePlayer.w>ball.x&&
+    ball.y+ball.r>paddlePlayer.y&&
+    paddlePlayer.y+paddlePlayer.h>ball.y);
+}
+function isCollisionPaddleEnemy(){
+    return (ball.x+ball.r>paddleEnemy.x&&
+        paddleEnemy.x+paddleEnemy.w>ball.x&&
+        ball.y+ball.r>paddleEnemy.y&&
+        paddleEnemy.y+paddleEnemy.h>ball.y);
+}
 function drawPlayer(x,y,width,height,color){
     return{
         x:x,
@@ -97,15 +109,15 @@ function drawPlayer(x,y,width,height,color){
         w:width,
         h:height,
         c:color,
-        s:15,
+        s:3,
         ground:false,
         //check update movement player
         update:function(){
             if(keysPress['ArrowUp']||keysPress['KeyW']){
-                this.y -=this.s;
+                this.y -=this.s+Math.floor(Math.random()*10);
             }
             if(keysPress['ArrowDown']||keysPress['KeyS']){
-                this.y+=this.s;
+                this.y+=this.s+Math.floor(Math.random()*10);
             }
             if(this.y<0){
                 this.y=0;
@@ -129,7 +141,7 @@ function drawEnemy(x,y,width,height,color){
         y:y,
         w:width,
         h:height,
-        s:10,
+        s:15,
         groud:false,
         update:function(){
             this.draw();
@@ -178,24 +190,26 @@ function updateGame(){
     context.fillStyle='black';
     context.fillRect(0,0,canvas.width,canvas.height);
     context.closePath();
-    // ball.updateLeftUp();
-    // ball.updateLeftDown()
     ball.update();
+    if(isCollisionPaddlePlayer()){
+        ball.x=30;
+        ball.dx=-ball.dx;
+    }
+    if(isCollisionPaddleEnemy()){
+        ball.x = canvas.width-30;
+        ball.dx=-ball.dx
+    }
     paddlePlayer.update();
     paddleEnemy.update();
 }
 
-function drawText(){
-    return{
-        
-    }
-}
+
 
 function startGame(){
     canvas.width=900;
     canvas.height =500;
     gameSpeed=3;
-    ball =drawBall(50,50,10,"#FFFFC2");
+    ball =drawBall(canvas.width/2,canvas.height/2,10,"#FFFFC2");
     paddlePlayer = drawPlayer(0,0,15,100,"#F70D1A");
     paddleEnemy = drawEnemy(canvas.width-15,0,15,100,"#CC6600");
     requestAnimationFrame(updateGame);
